@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/pet_project.dir/main.cpp.o  -o pet_project 

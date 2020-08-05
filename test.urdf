@@ -1,0 +1,13 @@
+<material name = "Grey" > 
+<color rbga ="0.4 0.4 0.4 1"/>
+<link name ="foreaft_constraint_element" /> 
+</link> 
+<link name ="pitch_constraint_element" /> 
+</link> 
+<joint name = "foreaft" type = "fixed" > 
+<origin rpy = "0 0 0" xyz= "0 0 0"/>
+<axis xyz = "1 0 0" /> 
+<child link = "pitch_constraint_element" /> 
+<parent link = "foreaft_constraint_element" /> 
+<limit effort ="0" lower = "-10000" upper = "10000" velocity = "0" />
+</joint> 
