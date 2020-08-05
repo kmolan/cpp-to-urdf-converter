@@ -1,13 +1,30 @@
+<?xml version="1.0" ?>
+<robot name="pendulum" xmlns:xacro="http://ros.org/wiki/xacro">
 <material name = "Grey" > 
 <color rbga ="0.4 0.4 0.4 1"/>
-<link name ="foreaft_constraint_element" /> 
+	<link name ="foreaft_constraint_element" /> 
+<visual>
+<origin rpy = "0 0 0" xyz= "0 0 0"/>
+<geometry>
+<boxsize="0.5 0.5 0.5"/>
+</geometry
+</visual><collision><origin rpy = "0 0 0" xyz= "0 0 0"/>
+<geometry>
+<boxsize="0.5 0.5 0.5"/>
+</geometry
+</collision>
+<inertial>
+<mass value = "1"/>
+<inertia ixx = "0.1" ixy = "0.1" ixz = "0" iyy = "0" iyz = "0.1" izz = "0.1"/>
+</inertial>
 </link> 
-<link name ="pitch_constraint_element" /> 
+	<link name ="pitch_constraint_element" /> 
 </link> 
 <joint name = "foreaft" type = "fixed" > 
 <origin rpy = "0 0 0" xyz= "0 0 0"/>
 <axis xyz = "1 0 0" /> 
-<child link = "pitch_constraint_element" /> 
-<parent link = "foreaft_constraint_element" /> 
+<child link = "foreaft_constraint_element" /> 
+<parent link = "pitch_constraint_element" /> 
 <limit effort ="0" lower = "-10000" upper = "10000" velocity = "0" />
 </joint> 
+</robot>

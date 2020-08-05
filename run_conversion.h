@@ -2,7 +2,6 @@
 
 #include <fstream>
 #include <string>
-#include <climits>
 #include <unordered_set>
 
 namespace global_list{
@@ -17,7 +16,7 @@ namespace helper_functions {
                      << z << "\"/>\n";
     }
 
-    void setGeometryHelper(std::string type = box, float l, float b, float h, std::ofstream *filepointer) {
+    void setGeometryHelper(std::string type, float l, float b, float h, std::ofstream *filepointer) {
         *filepointer << "<geometry>\n";
         *filepointer << "<" << type << "size=\"" << l << " " << b << " " << h << "\"/>\n";
         *filepointer << "</geometry\n";
@@ -32,6 +31,8 @@ public:
     }
 
     void setName(std::string name){
+        checkIfFinalized();
+
         if(global_list::list_of_links.count(name)){
             std::string error = "Redeclaration of link name " + name + " found. Please use a different name.";
             throw std::runtime_error(error);
@@ -44,71 +45,88 @@ public:
     }
 
     void openVisual(){
+        checkIfFinalized();
         *filepointer << "<visual>\n";
         visualtag = true;
     }
 
     void setVisualOrigin(float roll, float pitch, float yaw, float x, float y, float z){
-        if(!visualtag) openVisual();
+        checkIfFinalized();
+        checkifvisual();
         helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
-    void setVisualGeometry(std::string type = "box", float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
-        if(!visualtag) openVisual();
+    void setVisualGeometry(std::string type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
+        checkIfFinalized();
+        checkifvisual();
         helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
     }
 
     void finalizeVisual(){
+        checkIfFinalized();
         *filepointer << "</visual>";
         visualtag = false;
     }
 
     void openCollision(){
+        checkIfFinalized();
         *filepointer << "<collision>";
         collisiontag = true;
     }
 
     void setCollisionOrigin(float roll, float pitch, float yaw, float x, float y, float z){
-        if(!visualtag) openCollision();
+        checkIfFinalized();
+        checkifcollision();
         helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
-    void setCollisionGeometry(std::string type = "box", float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
-        if(!visualtag) openCollision();
+    void setCollisionGeometry(std::string type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
+        checkIfFinalized();
+        checkifcollision();
         helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
     }
 
     void finalizeCollision(){
+        checkIfFinalized();
         *filepointer << "</collision>\n";
         collisiontag = false;
     }
 
     void openInertial(){
+        checkIfFinalized();
         *filepointer << "<inertial>\n";
         inertiatag = true;
     }
 
     void setInertialOrigin(float roll, float pitch, float yaw, float x, float y, float z){
+        checkIfFinalized();
+        checkifinertial();
         if(!visualtag) openInertial();
         helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
     void setInertialMass(float mass){
+        checkIfFinalized();
+        checkifinertial();
         if(!inertiatag) openInertial();
         *filepointer << "<mass value = \""<< mass << "\"/>\n";
     }
 
     void setInertialTensor(float ixx, float ixy, float ixz, float iyy, float iyz, float izz){
+        checkIfFinalized();
+        checkifinertial();
         if(!inertiatag) openInertial();
         *filepointer << "<inertia ixx = \""<<ixx << "\" ixy = \"" << ixy << "\" ixz = \"" << ixz << "\" iyy = \"" << iyy << "\" iyz = \"" << iyz << "\" izz = \"" << izz << "\"/>\n";
     }
 
     void finalizeInertial(){
+        checkIfFinalized();
         *filepointer << "</inertial>\n";
         inertiatag = false;
     }
 
     void finalizeLink(){
+        checkIfFinalized();
         if(visualtag){
             throw std::runtime_error("Visual tag must be closed before finalizing link. Use finalizeVisual() to close visual tag");
         }
@@ -119,6 +137,7 @@ public:
             throw std::runtime_error("Inertial tag must be closed before finalizing link. Use finalizeInertial() to close visual tag");
         }
         *filepointer << "</link> \n";
+        isLinkOpen = false;
     }
 
     std::string getName(){
@@ -126,12 +145,42 @@ public:
     }
 
 private:
+
+    void checkIfFinalized(){
+        if (!isLinkOpen){
+            std::string error = "Changes cannot be made to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        }
+    }
+
+    void checkifvisual(){
+        if (!visualtag){
+            std::string error = "Changes cannot be made to the visual tag of link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        }
+    }
+
+    void checkifcollision(){
+        if (!collisiontag){
+            std::string error = "Changes cannot be made to the collision tag of link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        }
+    }
+
+    void checkifinertial(){
+        if (!inertiatag){
+            std::string error = "Changes cannot be made to the inertial tag of link" + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        }
+    }
+
     std::ofstream* filepointer;
     std::string linkname_;
     bool setname = false;
     bool visualtag = false; /// < is the visual tag open
     bool collisiontag = false; ///< is the collision tag open
     bool inertiatag = false; ///< is the inertia tag open
+    bool isLinkOpen = true; ///< is the link open
 };
 
 class Joint{
@@ -173,7 +222,7 @@ public:
         *filepointer << "<limit effort =\"" << effort << "\" lower = \"" << lower << "\" upper = \"" << upper << "\" velocity = \"" << velocity << "\" />\n";
     }
 
-    void Finalize(){
+    void finalizeJoint(){
 
         if(!setParent || !setChild){
             std::string error = "Joint " + jointname_ + " must have a parent and child link declared.";
@@ -230,4 +279,25 @@ private:
     std::ofstream* filepointer;
     bool setColor = false;
     std::string material_name;
+};
+
+class Robot{
+public:
+    void beginURDF(std::string name, std::ofstream* file){
+        filepointer = file;
+        *filepointer << "<?xml version=\"1.0\" ?>\n";
+    }
+
+    void openRobotAndSetName(std::string name){
+        robot_name = name;
+        *filepointer << "<robot name=\""<< robot_name <<"\" xmlns:xacro=\"http://ros.org/wiki/xacro\">\n";
+    }
+
+    void finalizeRobot(){
+        *filepointer << "</robot>\n";
+    }
+
+private:
+    std::string robot_name;
+    std::ofstream* filepointer;
 };

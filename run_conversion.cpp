@@ -8,31 +8,50 @@ int main () {
 
     std::ofstream target_file (filename);
 
-    Link linkobj(&target_file);
-    Link newlinkobj(&target_file);
+    Robot robot;
 
-    Material matobj(&target_file);
+    Link foreaft_constraint_element(&target_file);
+    Link pitch_constraint_element(&target_file);
 
-    Joint jointobj(&target_file);
+    Material grey_material(&target_file);
+
+    Joint foreaft_joint(&target_file);
 
     try {
 
-        matobj.setMaterialName("Grey");
-        matobj.setRGBA(0.4,0.4,0.4,1);
+        robot.beginURDF(filename, &target_file);
+        robot.openRobotAndSetName("pendulum");
 
-        linkobj.setName("foreaft_constraint_element");
-        linkobj.Finalize();
+        grey_material.setMaterialName("Grey");
+        grey_material.setRGBA(0.4,0.4,0.4,1);
 
-        newlinkobj.setName("pitch_constraint_element");
-        newlinkobj.Finalize();
+        foreaft_constraint_element.setName("foreaft_constraint_element");
+        foreaft_constraint_element.openVisual();
+        foreaft_constraint_element.setVisualOrigin(0,0,0,0,0,0);
+        foreaft_constraint_element.setVisualGeometry("box", 0.5, 0.5, 0.5);
+        foreaft_constraint_element.finalizeVisual();
+        foreaft_constraint_element.openCollision();
+        foreaft_constraint_element.setCollisionOrigin(0,0,0,0,0,0);
+        foreaft_constraint_element.setCollisionGeometry("box",0.5,0.5,0.5);
+        foreaft_constraint_element.finalizeCollision();
+        foreaft_constraint_element.openInertial();
+        foreaft_constraint_element.setInertialMass(1.0);
+        foreaft_constraint_element.setInertialTensor(0.1,0.1,0,0,0.1,0.1);
+        foreaft_constraint_element.finalizeInertial();
+        foreaft_constraint_element.finalizeLink();
 
-        jointobj.SetNameAndType("foreaft");
-        jointobj.setOrigin(0,0,0,0,0,0);
-        jointobj.setAxis(1,0,0);
-        jointobj.setChildLink(newlinkobj);
-        jointobj.setParentLink(linkobj);
-        jointobj.setLimits();
-        jointobj.Finalize();
+        pitch_constraint_element.setName("pitch_constraint_element");
+        pitch_constraint_element.finalizeLink();
+
+        foreaft_joint.SetNameAndType("foreaft");
+        foreaft_joint.setOrigin(0,0,0,0,0,0);
+        foreaft_joint.setAxis(1,0,0);
+        foreaft_joint.setChildLink(foreaft_constraint_element);
+        foreaft_joint.setParentLink(pitch_constraint_element);
+        foreaft_joint.setLimits();
+        foreaft_joint.finalizeJoint();
+
+        robot.finalizeRobot();
     }
     catch(const char* msg){
         std::cerr << msg << std::endl;
