@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/cpp_to_urdf.dir/run_conversion.cpp.o  -o cpp_to_urdf 
