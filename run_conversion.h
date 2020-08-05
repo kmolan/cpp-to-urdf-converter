@@ -3,24 +3,12 @@
 #include <fstream>
 #include <string>
 #include <unordered_set>
+#include "helper_functions.h"
 
 namespace global_list{
     std::unordered_set<std::string> list_of_links;
     std::unordered_set<std::string> list_of_joints;
     std::unordered_set<std::string> list_of_materials;
-}
-
-namespace helper_functions {
-    void setOriginHelper(float roll, float pitch, float yaw, float x, float y, float z, std::ofstream *filepointer) {
-        *filepointer << "<origin rpy = \"" << roll << " " << pitch << " " << yaw << "\" xyz= \"" << x << " " << y << " "
-                     << z << "\"/>\n";
-    }
-
-    void setGeometryHelper(std::string type, float l, float b, float h, std::ofstream *filepointer) {
-        *filepointer << "<geometry>\n";
-        *filepointer << "<" << type << "size=\"" << l << " " << b << " " << h << "\"/>\n";
-        *filepointer << "</geometry\n";
-    }
 }
 
 class Link{

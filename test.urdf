@@ -2,7 +2,7 @@
 <robot name="pendulum" xmlns:xacro="http://ros.org/wiki/xacro">
 <material name = "Grey" > 
 <color rbga ="0.4 0.4 0.4 1"/>
-	<link name ="foreaft_constraint_element" /> 
+<link name ="foreaft_constraint_element" /> 
 <visual>
 <origin rpy = "0 0 0" xyz= "0 0 0"/>
 <geometry>
@@ -18,7 +18,7 @@
 <inertia ixx = "0.1" ixy = "0.1" ixz = "0" iyy = "0" iyz = "0.1" izz = "0.1"/>
 </inertial>
 </link> 
-	<link name ="pitch_constraint_element" /> 
+<link name ="pitch_constraint_element" /> 
 </link> 
 <joint name = "foreaft" type = "fixed" > 
 <origin rpy = "0 0 0" xyz= "0 0 0"/>
