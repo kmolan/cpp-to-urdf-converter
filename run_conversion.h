@@ -11,14 +11,17 @@ namespace global_list{
     std::unordered_set<std::string> list_of_materials;
 }
 
-void setOriginHelper(float roll, float pitch, float yaw, float x, float y, float z, std::ofstream* filepointer){
-    *filepointer << "<origin rpy = \""<< roll << " " << pitch << " " << yaw << "\" xyz= \"" << x << " " << y << " " << z << "\"/>\n";
-}
+namespace helper_functions {
+    void setOriginHelper(float roll, float pitch, float yaw, float x, float y, float z, std::ofstream *filepointer) {
+        *filepointer << "<origin rpy = \"" << roll << " " << pitch << " " << yaw << "\" xyz= \"" << x << " " << y << " "
+                     << z << "\"/>\n";
+    }
 
-void setGeometryHelper(std::string type = box, float l, float b, float h, std::ofstream* filepointer){
-    *filepointer << "<geometry>\n";
-    *filepointer << "<"<< type << "size=\"" << l << " " << b << " " << h << "\"/>\n";
-    *filepointer << "</geometry\n";
+    void setGeometryHelper(std::string type = box, float l, float b, float h, std::ofstream *filepointer) {
+        *filepointer << "<geometry>\n";
+        *filepointer << "<" << type << "size=\"" << l << " " << b << " " << h << "\"/>\n";
+        *filepointer << "</geometry\n";
+    }
 }
 
 class Link{
@@ -47,12 +50,12 @@ public:
 
     void setVisualOrigin(float roll, float pitch, float yaw, float x, float y, float z){
         if(!visualtag) openVisual();
-        setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
+        helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
     void setVisualGeometry(std::string type = "box", float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
         if(!visualtag) openVisual();
-        setGeometryHelper(type, l ,b , h, filepointer);
+        helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
     }
 
     void finalizeVisual(){
@@ -67,12 +70,12 @@ public:
 
     void setCollisionOrigin(float roll, float pitch, float yaw, float x, float y, float z){
         if(!visualtag) openCollision();
-        setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
+        helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
     void setCollisionGeometry(std::string type = "box", float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
         if(!visualtag) openCollision();
-        setGeometryHelper(type, l ,b , h, filepointer);
+        helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
     }
 
     void finalizeCollision(){
@@ -87,7 +90,7 @@ public:
 
     void setInertialOrigin(float roll, float pitch, float yaw, float x, float y, float z){
         if(!visualtag) openInertial();
-        setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
+        helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
     void setInertialMass(float mass){
@@ -163,7 +166,7 @@ public:
     }
 
     void setOrigin(int roll, int pitch, int yaw, int x, int y, int z){
-        setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
+        helper_functions:: setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
     void setLimits(float effort = 0.0, float upper = 10000.0, float lower = -10000.0, float velocity = 0.0){
