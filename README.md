@@ -1,1 +1,1 @@
-# cpp_to_urdf_converter
+# cpp-to-urdf-converter
