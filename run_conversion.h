@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_set>
 #include <utility>
+#include <vector>
 #include "helper_functions.h"
 
 /*!
@@ -52,7 +53,7 @@ public:
      * @param b
      * @param a
      */
-    void setRGBA(float r, float g, float b, float a){
+    const void setRGBA(float r, float g, float b, float a){
         *filepointer << "\t\t<color rgba =\"" << r << " "<< g << " " << b << " " << a << "\"/>\n";
         setColor = true;
     }
@@ -123,30 +124,65 @@ public:
 
     /*!
      * @brief set origin for the visual tag
-     * @param roll
-     * @param pitch
-     * @param yaw
-     * @param x
-     * @param y
-     * @param z
+     * @param listOfOrigins std::vector containing the roll, pitch, yaw, x, y, z of the origin
      */
-    void setVisualOrigin(float roll, float pitch, float yaw, float x, float y, float z){
+    void setVisualOrigin(const std::vector<float> listOfOrigins){
         checkIfFinalized(); //prevent using the function if link has been finalized
         checkifvisual(); //prevent using the function if visual tag has been finalized
-        helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
+        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
     /*!
-     * @brief set geometry parameter in visual tag
-     * @param type type of body
-     * @param l
-     * @param b
-     * @param h
+     * @brief set origin for the visual tag
+     * @param listOfOrigins std::vector containing the roll, pitch, yaw, x, y, z of the origin
      */
-    void setVisualGeometry(const std::string& type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
+    void setVisualOrigin(const std::vector<double> listOfOrigins){
         checkIfFinalized(); //prevent using the function if link has been finalized
         checkifvisual(); //prevent using the function if visual tag has been finalized
-        helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
+        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
+    }
+
+    /*!
+     * @brief set a box geometry in the visual tag
+     * @param length
+     * @param breadth
+     * @param height
+     */
+    const void setVisualGeometryBox(float length, float breadth, float height){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifvisual(); //prevent using the function if visual tag has been finalized
+        helper_functions::setGeometryHelperBox(length, breadth, height, filepointer);
+    }
+
+    /*!
+     * @brief set a cylinder geometry in the visual tag
+     * @param length
+     * @param radius
+     */
+    const void setVisualGeometryCylinder(float length, float radius){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifvisual(); //prevent using the function if visual tag has been finalized
+        helper_functions::setGeometryHelperCylinder(length, radius, filepointer);
+    }
+
+    /*!
+     * @brief set a sphere geometry in the visual tag
+     * @param radius
+     */
+    const void setVisualGeometrySphere(float radius){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifvisual(); //prevent using the function if visual tag has been finalized
+        helper_functions::setGeometryHelperSphere(radius, filepointer);
+    }
+
+    /*!
+     * @brief set geometry in visual tag using predefined meshes
+     * @param meshfilename filename of the mesh
+     */
+    const void setVisualGeometryMesh(const std::string& meshfilename){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifvisual(); //prevent using the function if visual tag has been finalized
+        helper_functions::setGeometryHelperMesh(meshfilename, filepointer);
     }
 
     /*!
@@ -179,30 +215,65 @@ public:
 
     /*!
      * @brief set origin for collision tag
-     * @param roll
-     * @param pitch
-     * @param yaw
-     * @param x
-     * @param y
-     * @param z
+     * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
      */
-    void setCollisionOrigin(float roll, float pitch, float yaw, float x, float y, float z){
+    void setCollisionOrigin(const std::vector<float> listOfOrigins){
         checkIfFinalized(); //prevent using the function if link has been finalized
         checkifcollision(); //prevent using the function if collision tag has been finalized
-        helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
+        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
     /*!
-     * @brief set geometry for collision tag
-     * @param type type of body
-     * @param l
-     * @param b
-     * @param h
+     * @brief set origin for collision tag
+     * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
      */
-    void setCollisionGeometry(const std::string& type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
+    void setCollisionOrigin(const std::vector<double> listOfOrigins){
         checkIfFinalized(); //prevent using the function if link has been finalized
         checkifcollision(); //prevent using the function if collision tag has been finalized
-        helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
+        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
+    }
+
+    /*!
+     * @brief set a box geometry in the collision tag
+     * @param length
+     * @param breadth
+     * @param height
+     */
+    const void setCollisionGeometryBox(float length, float breadth, float height){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifcollision(); //prevent using the function if collision tag has been finalized
+        helper_functions::setGeometryHelperBox(length , breadth , height, filepointer);
+    }
+
+    /*!
+     * @brief set a cylinder geometry in the collision tag
+     * @param length
+     * @param radius
+     */
+    const void setCollisionGeometryCylinder(float length, float radius){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifcollision(); //prevent using the function if collision tag has been finalized
+        helper_functions::setGeometryHelperCylinder(length, radius, filepointer);
+    }
+
+    /*!
+     * @brief set a sphere geometry in the collision tag
+     * @param radius
+     */
+    const void setCollisionGeometrySphere(float radius){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifcollision(); //prevent using the function if collision tag has been finalized
+        helper_functions::setGeometryHelperSphere(radius, filepointer);
+    }
+
+    /*!
+     * @brief set a mesh geometry in the collision tag
+     * @param meshfilename
+     */
+    void setCollisionGeometryMesh(const std::string& meshfilename){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifcollision(); //prevent using the function if collision tag has been finalized
+        helper_functions::setGeometryHelperMesh(meshfilename, filepointer);
     }
 
     /*!
@@ -225,24 +296,29 @@ public:
 
     /*!
      * @brief set origin for inertial tag
-     * @param roll
-     * @param pitch
-     * @param yaw
-     * @param x
-     * @param y
-     * @param z
+     * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
      */
-    void setInertialOrigin(float roll, float pitch, float yaw, float x, float y, float z){
+    void setInertialOrigin(const std::vector<float> listOfOrigins){
         checkIfFinalized(); //prevent using the function if link has been finalized
         checkifinertial(); //prevent using the function if collision tag has been finalized
-        helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
+        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
+    }
+
+    /*!
+     * @brief set origin for inertial tag
+     * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
+     */
+    void setInertialOrigin(const std::vector<double> listOfOrigins){
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifinertial(); //prevent using the function if collision tag has been finalized
+        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
     /*!
      * @brief set mass for the inertial tag
      * @param mass desired mass
      */
-    void setInertialMass(float mass){
+    void setInertialMass(const float mass){
         checkIfFinalized(); //prevent using the function if link has been finalized
         checkifinertial(); //prevent using the function if collision tag has been finalized
         *filepointer << "\t\t\t<mass value = \""<< mass << "\"/>\n";
@@ -257,7 +333,7 @@ public:
      * @param iyz
      * @param izz
      */
-    void setInertialTensor(float ixx, float ixy, float ixz, float iyy, float iyz, float izz){
+    const void setInertialTensor(float ixx, float ixy, float ixz, float iyy, float iyz, float izz){
         checkIfFinalized(); //prevent using the function if link has been finalized
         checkifinertial(); //prevent using the function if collision tag has been finalized
         if(!inertiatag) openInertial();
