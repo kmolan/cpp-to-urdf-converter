@@ -2,7 +2,7 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="pet_project" targetName="pet_project" />
+      <config projectName="cpp_to_urdf" targetName="cpp_to_urdf" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -12,7 +12,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f82a88f-188b-4c64-821b-60a1c71c1cee" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helper_functions.h" beforeDir="false" afterPath="$PROJECT_DIR$/helper_functions.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_conversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/run_conversion.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_conversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/run_conversion.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,16 +43,17 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/test.urdf" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs.jest.jest_package" value="" />
   </component>
   <component name="RunManager">
-    <configuration name="pet_project" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pet_project" TARGET_NAME="pet_project" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="pet_project" RUN_TARGET_NAME="pet_project">
+    <configuration name="cpp_to_urdf" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cpp_to_urdf" TARGET_NAME="cpp_to_urdf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cpp_to_urdf" RUN_TARGET_NAME="cpp_to_urdf">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -64,7 +69,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1596487940960</updated>
-      <workItem from="1596487942074" duration="29465000" />
+      <workItem from="1596487942074" duration="30057000" />
+      <workItem from="1596669083012" duration="2971000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1596609796287</created>
@@ -84,6 +90,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="first commit" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="451" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596669259749">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="451" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1596669259749" />
     <state x="1133" y="357" width="637" height="390" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1596623240658">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -92,26 +102,30 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="558" y="129" width="860" height="847" key="CommitChangelistDialog2/67.27.1853.1053@67.27.1853.1053" timestamp="1596609796141" />
-    <state x="1239" y="310" width="424" height="484" key="FileChooserDialogImpl" timestamp="1596641605160">
+    <state x="1239" y="310" width="424" height="484" key="FileChooserDialogImpl" timestamp="1596669243278">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="1239" y="310" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1596641605160" />
-    <state width="1807" height="201" key="GridCell.Tab.0.bottom" timestamp="1596609648399">
+    <state x="1239" y="310" width="424" height="484" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1596669243278" />
+    <state width="881" height="201" key="GridCell.Tab.0.bottom" timestamp="1596668834781">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="201" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1596609648399" />
-    <state width="1807" height="201" key="GridCell.Tab.0.center" timestamp="1596609648396">
+    <state width="881" height="201" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1596668834781" />
+    <state width="881" height="201" key="GridCell.Tab.0.center" timestamp="1596668834781">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="201" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1596609648396" />
-    <state width="1807" height="201" key="GridCell.Tab.0.left" timestamp="1596609648394">
+    <state width="881" height="201" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1596668834781" />
+    <state width="881" height="201" key="GridCell.Tab.0.left" timestamp="1596668834780">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="201" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1596609648394" />
-    <state width="1807" height="201" key="GridCell.Tab.0.right" timestamp="1596609648398">
+    <state width="881" height="201" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1596668834780" />
+    <state width="881" height="201" key="GridCell.Tab.0.right" timestamp="1596668834781">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1807" height="201" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1596609648398" />
+    <state width="881" height="201" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1596668834781" />
+    <state x="1112" y="381" key="com.intellij.ide.util.TipDialog" timestamp="1596669084774">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="1112" y="381" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1596669084774" />
     <state x="761" y="472" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1596609774449">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>

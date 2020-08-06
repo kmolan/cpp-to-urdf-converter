@@ -1,15 +1,17 @@
 #include <iostream>
-#include <fstream>
 #include "run_conversion.h"
+
 #define filename "test.urdf"
+
 int main () {
     std::ofstream target_file (filename);
     Robot robot;
     Link base_link(&target_file), pendulum_link_1(&target_file);
     Joint pendulum_joint_1(&target_file);
     Material blue_material(&target_file), red_material(&target_file), green_material(&target_file), yellow_material(&target_file), grey_material(&target_file);
+
     try {
-        robot.beginURDF(filename, &target_file);
+        robot.beginURDF(&target_file);
         robot.openRobotAndSetName("omnipointer");
 
         blue_material.setMaterialName("Blue");
@@ -36,6 +38,7 @@ int main () {
         base_link.setInertialTensor(0.000267245666667, 0, 0, 0.000435483, 0, 0.000267245666667);
         base_link.finalizeInertial();
         base_link.finalizeLink();
+
         pendulum_link_1.setName("pendulum_link_1");
         pendulum_link_1.openVisual();
         pendulum_link_1.setVisualOrigin(0,0,0,0,0,0.5);
@@ -52,6 +55,7 @@ int main () {
         pendulum_link_1.setInertialTensor(0.0835416666667, 0, 0, 0.0835416666667, 0, 0.000343003333333);
         pendulum_link_1.finalizeInertial();
         pendulum_link_1.finalizeLink();
+
         pendulum_joint_1.SetNameAndType("pendulum_joint_1", "continuous");
         pendulum_joint_1.setParentLink(base_link);
         pendulum_joint_1.setChildLink(pendulum_link_1);
@@ -59,6 +63,7 @@ int main () {
         pendulum_joint_1.setOrigin(0,0,0,0,0.05225,0.05715);
         pendulum_joint_1.setAxis(0,1,0);
         pendulum_joint_1.finalizeJoint();
+
         robot.finalizeRobot();
     }
     catch(const char* msg){

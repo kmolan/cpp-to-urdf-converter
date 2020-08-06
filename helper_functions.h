@@ -6,7 +6,7 @@ namespace helper_functions {
                      << z << "\"/>\n";
     }
 
-    void setGeometryHelper(std::string type, float l, float b, float h, std::ofstream *filepointer) {
+    void setGeometryHelper(const std::string& type, float l, float b, float h, std::ofstream *filepointer) {
         *filepointer << "\t\t\t<geometry>\n";
         *filepointer << "\t\t\t\t<" << type << " size=\"" << l << " " << b << " " << h << "\"/>\n";
         *filepointer << "\t\t\t</geometry>\n";

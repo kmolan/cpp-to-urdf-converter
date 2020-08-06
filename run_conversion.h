@@ -3,21 +3,36 @@
 #include <fstream>
 #include <string>
 #include <unordered_set>
+#include <utility>
 #include "helper_functions.h"
 
+/*!
+ * namespace to store current list of links, joints and materials to prevent redeclaration of names
+ */
 namespace global_list{
-    std::unordered_set<std::string> list_of_links;
-    std::unordered_set<std::string> list_of_joints;
-    std::unordered_set<std::string> list_of_materials;
+    std::unordered_set<std::string> list_of_links; ///< Stores the name of all the declared links
+    std::unordered_set<std::string> list_of_joints; ///< Stores the name of all the declared joints
+    std::unordered_set<std::string> list_of_materials; ///< Stores the name of all the declared materials
 }
 
+/*!
+ * Material object to define new materials
+ */
 class Material {
 public:
-    Material(std::ofstream* file){
+    /*!
+     * @brief default constructor for material class
+     * @param file address of the std::ofstream object that is writing on the current urdf file
+     */
+    explicit Material(std::ofstream* file){
         filepointer = file;
     }
 
-    void setMaterialName(std::string name){
+    /*!
+     * @brief opens the material tag, specifies the material name and cross-checks if name already exists
+     * @param name the name of the desired material
+     */
+    void setMaterialName(const std::string& name){
 
         if(global_list::list_of_materials.count(name)){
             std::string error = "Redeclaration of material name " + name + " found. Please use a different name.";
@@ -30,11 +45,21 @@ public:
 
     }
 
+    /*!
+     * @brief writes the rgba component of the material
+     * @param r
+     * @param g
+     * @param b
+     * @param a
+     */
     void setRGBA(float r, float g, float b, float a){
         *filepointer << "\t\t<color rgba =\"" << r << " "<< g << " " << b << " " << a << "\"/>\n";
         setColor = true;
     }
 
+    /*!
+     * @brief closes the material tag
+     */
     void finalizeMaterial(){
         if(!setColor){
             std::string error = material_name + " must have a defined rgba value. Use .setRGBA() to set rgba values.";
@@ -43,26 +68,40 @@ public:
         *filepointer << "\t</material>\n\n";
     }
 
+    /*!
+     * @brief returns the name of the material instance
+     * @return name of the material instance
+     */
     std::string getName(){
         return material_name;
     }
 
 private:
-    std::ofstream* filepointer;
-    bool setColor = false;
-    std::string material_name;
+    std::ofstream* filepointer; ///<Member variable to store file pointer of the urdf file
+    bool setColor = false; ///<Flag to check if the user is trying to close the material tag before setting rgba values
+    std::string material_name; ///<Member variable to store the instance's name
 };
 
+/*!
+ * Link object to define new links
+ */
 class Link{
 public:
 
-    Link(std::ofstream* file){
+    /*!
+     * @brief default constructor for the link object
+     * @param file pointer to the current urdf file
+     */
+    explicit Link(std::ofstream* file){
         filepointer = file;
     }
 
-    void setName(std::string name){
-        checkIfFinalized();
-
+    /*!
+     * @brief begins the link tag and specifies link name, cross-checks to prevent redeclaration of link names
+     * @param name desired link name
+     */
+    void setName(const std::string& name){
+        checkIfFinalized(); //prevent using the function if link has been finalized
         if(global_list::list_of_links.count(name)){
             std::string error = "Redeclaration of link name " + name + " found. Please use a different name.";
             throw std::runtime_error(error);
@@ -70,97 +109,177 @@ public:
 
         global_list::list_of_links.insert(name);
         linkname_ = name;
-        setname = true;
         *filepointer << "\t<link name =\"" << name << "\"> \n";
     }
 
+    /*!
+     * @brief begins the visual tag
+     */
     void openVisual(){
-        checkIfFinalized();
+        checkIfFinalized(); //prevent using the function if link has been finalized
         *filepointer << "\t\t<visual>\n";
         visualtag = true;
     }
 
+    /*!
+     * @brief set origin for the visual tag
+     * @param roll
+     * @param pitch
+     * @param yaw
+     * @param x
+     * @param y
+     * @param z
+     */
     void setVisualOrigin(float roll, float pitch, float yaw, float x, float y, float z){
-        checkIfFinalized();
-        checkifvisual();
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifvisual(); //prevent using the function if visual tag has been finalized
         helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
-    void setVisualGeometry(std::string type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
-        checkIfFinalized();
-        checkifvisual();
+    /*!
+     * @brief set geometry parameter in visual tag
+     * @param type type of body
+     * @param l
+     * @param b
+     * @param h
+     */
+    void setVisualGeometry(const std::string& type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifvisual(); //prevent using the function if visual tag has been finalized
         helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
     }
 
+    /*!
+     * @brief add material in the visual tag
+     * @param material instance of the Material object
+     */
     void setVisualMaterial(Material material){
-        checkIfFinalized();
-        checkifvisual();
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifvisual(); //prevent using the function if visual tag has been finalized
         *filepointer << "\t\t\t<material name = \"" << material.getName() << "\"/>\n";
     }
 
+    /*!
+     * @brief close visual tag and prevent from making any further changes to tag
+     */
     void finalizeVisual(){
-        checkIfFinalized();
+        checkIfFinalized(); //prevent using the function if link has been finalized
         *filepointer << "\t\t</visual>\n";
         visualtag = false;
     }
 
+    /*!
+     * begin collision tag
+     */
     void openCollision(){
-        checkIfFinalized();
+        checkIfFinalized(); //prevent using the function if link has been finalized
         *filepointer << "\t\t<collision>\n";
         collisiontag = true;
     }
 
+    /*!
+     * @brief set origin for collision tag
+     * @param roll
+     * @param pitch
+     * @param yaw
+     * @param x
+     * @param y
+     * @param z
+     */
     void setCollisionOrigin(float roll, float pitch, float yaw, float x, float y, float z){
-        checkIfFinalized();
-        checkifcollision();
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifcollision(); //prevent using the function if collision tag has been finalized
         helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
-    void setCollisionGeometry(std::string type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
-        checkIfFinalized();
-        checkifcollision();
+    /*!
+     * @brief set geometry for collision tag
+     * @param type type of body
+     * @param l
+     * @param b
+     * @param h
+     */
+    void setCollisionGeometry(const std::string& type, float l, float b, float h){ //TODO: THINK OF DIFF TYPES AND ARGUMENTS
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifcollision(); //prevent using the function if collision tag has been finalized
         helper_functions::setGeometryHelper(type, l ,b , h, filepointer);
     }
 
+    /*!
+     * @brief close collision tag and prevent any further changes to the tag
+     */
     void finalizeCollision(){
-        checkIfFinalized();
+        checkIfFinalized(); //prevent using the function if link has been finalized
         *filepointer << "\t\t</collision>\n";
         collisiontag = false;
     }
 
+    /*!
+     * @brief begin inertial tag
+     */
     void openInertial(){
-        checkIfFinalized();
+        checkIfFinalized(); //prevent using the function if link has been finalized
         *filepointer << "\t\t<inertial>\n";
         inertiatag = true;
     }
 
+    /*!
+     * @brief set origin for inertial tag
+     * @param roll
+     * @param pitch
+     * @param yaw
+     * @param x
+     * @param y
+     * @param z
+     */
     void setInertialOrigin(float roll, float pitch, float yaw, float x, float y, float z){
-        checkIfFinalized();
-        checkifinertial();
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifinertial(); //prevent using the function if collision tag has been finalized
         helper_functions::setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
+    /*!
+     * @brief set mass for the inertial tag
+     * @param mass desired mass
+     */
     void setInertialMass(float mass){
-        checkIfFinalized();
-        checkifinertial();
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifinertial(); //prevent using the function if collision tag has been finalized
         *filepointer << "\t\t\t<mass value = \""<< mass << "\"/>\n";
     }
 
+    /*!
+     * @brief set the inertial tensor in the inertial tag
+     * @param ixx
+     * @param ixy
+     * @param ixz
+     * @param iyy
+     * @param iyz
+     * @param izz
+     */
     void setInertialTensor(float ixx, float ixy, float ixz, float iyy, float iyz, float izz){
-        checkIfFinalized();
-        checkifinertial();
+        checkIfFinalized(); //prevent using the function if link has been finalized
+        checkifinertial(); //prevent using the function if collision tag has been finalized
         if(!inertiatag) openInertial();
         *filepointer << "\t\t\t<inertia ixx = \""<<ixx << "\" ixy = \"" << ixy << "\" ixz = \"" << ixz << "\" iyy = \"" << iyy << "\" iyz = \"" << iyz << "\" izz = \"" << izz << "\"/>\n";
     }
 
+    /*!
+     * @brief close the inertial tag
+     */
     void finalizeInertial(){
-        checkIfFinalized();
+        checkIfFinalized(); //prevent using the function if link has been finalized
         *filepointer << "\t\t</inertial>\n";
         inertiatag = false;
     }
 
+    /*!
+     * @brief close the link and do error handling to ensure all other tags are closed
+     */
     void finalizeLink(){
-        checkIfFinalized();
+        checkIfFinalized(); //prevent using the function if link has been finalized
+
+        //other checks
         if(visualtag){
             throw std::runtime_error("Visual tag must be closed before finalizing link. Use finalizeVisual() to close visual tag");
         }
@@ -174,12 +293,19 @@ public:
         isLinkOpen = false;
     }
 
+    /*!
+     * @brief returns name of the object instance
+     * @return name of the object instance
+     */
     std::string getName(){
         return linkname_;
     }
 
 private:
 
+    /*!
+     * @brief checks if the object link has been finalized
+     */
     void checkIfFinalized(){
         if (!isLinkOpen){
             std::string error = "Changes cannot be made to the link " + linkname_ + " after it has been finalized";
@@ -187,6 +313,9 @@ private:
         }
     }
 
+    /*!
+     * @brief checks if the visual tag has been finalized
+     */
     void checkifvisual(){
         if (!visualtag){
             std::string error = "Changes cannot be made to the visual tag of link " + linkname_ + " after it has been finalized";
@@ -194,6 +323,9 @@ private:
         }
     }
 
+    /*!
+     * @brief checks if the collision tag has been finalized
+     */
     void checkifcollision(){
         if (!collisiontag){
             std::string error = "Changes cannot be made to the collision tag of link " + linkname_ + " after it has been finalized";
@@ -201,6 +333,9 @@ private:
         }
     }
 
+    /*!
+     * checks if the inertial tag has been finalized
+     */
     void checkifinertial(){
         if (!inertiatag){
             std::string error = "Changes cannot be made to the inertial tag of link" + linkname_ + " after it has been finalized";
@@ -208,22 +343,34 @@ private:
         }
     }
 
-    std::ofstream* filepointer;
-    std::string linkname_;
-    bool setname = false;
+    std::ofstream* filepointer; ///< Pointer to the urdf file writer
+    std::string linkname_; ///< Name of the link instance
     bool visualtag = false; /// < is the visual tag open
     bool collisiontag = false; ///< is the collision tag open
     bool inertiatag = false; ///< is the inertia tag open
     bool isLinkOpen = true; ///< is the link open
 };
 
-class Joint{
+/*!
+ * @brief Joint object to define new joints
+ */
+class Joint{ //TODO: ADD CHECK SO USER CANNOT MODIFY AFTER JOINT HAS BEEN FINALIZED
 public:
-    Joint(std::ofstream* file){
+    /*!
+     * @brief default construtor
+     * @param file pointer to the urdf file writer
+     */
+    explicit Joint(std::ofstream* file){
         filepointer = file;
     }
 
-    void SetNameAndType(std::string name, std::string type = "fixed"){
+    /*!
+     * @brief begins joint tag, sets name of the joint and error handling for redeclaration of joint names
+     * @param name desired name of the joint
+     * @param type type of joint
+     */
+    void SetNameAndType(const std::string& name, const std::string& type = "fixed"){
+        checkIfFinalized(); //prevent from using function if joint has been finalized
         if(global_list::list_of_joints.count(name)){
             std::string error = "Redeclaration of joint name " + name + " found. Please use a different name.";
             throw std::runtime_error(error);
@@ -234,68 +381,137 @@ public:
         *filepointer << "\t<joint name = \"" << name <<"\" type = \""<< type << "\" > \n";
     }
 
+    /*!
+     * @brief set the parent link of the joint
+     * @param parent Link object instance of desired parent link
+     */
     void setParentLink(Link parent){
+        checkIfFinalized(); //prevent from using function if joint has been finalized
         *filepointer << "\t\t<parent link = \"" << parent.getName() << "\" /> \n";
         setParent = true;
     }
 
+    /*!
+     * @brief set the child link of the joint
+     * @param child Link object instance of desired child link
+     */
     void setChildLink(Link child){
+        checkIfFinalized(); //prevent from using function if joint has been finalized
         *filepointer << "\t\t<child link = \"" << child.getName() << "\" /> \n";
         setChild = true;
     }
 
+    /*!
+     * @brief set axis of the joint
+     * @param x
+     * @param y
+     * @param z
+     */
     void setAxis(int x = 0, int y = 0, int z = 0){
+        checkIfFinalized(); //prevent from using function if joint has been finalized
         *filepointer << "\t\t<axis xyz = \"" << x << " "<< y <<" "<< z << "\" /> \n";
     }
 
-    void setOrigin(int roll, int pitch, int yaw, int x, int y, int z){
+    /*!
+     * @brief set origin of the joint
+     * @param roll
+     * @param pitch
+     * @param yaw
+     * @param x
+     * @param y
+     * @param z
+     */
+    void setOrigin(float roll, float pitch, float yaw, float x, float y, float z){
+        checkIfFinalized(); //prevent from using function if joint has been finalized
         helper_functions:: setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
+    /*!
+     * @brief set joint limits
+     * @param effort
+     * @param upper
+     * @param lower
+     * @param velocity
+     */
     void setLimits(float effort = 0.0, float upper = 10000.0, float lower = -10000.0, float velocity = 0.0){
+        checkIfFinalized(); //prevent from using function if joint has been finalized
         *filepointer << "\t\t<limit effort =\"" << effort << "\" lower = \"" << lower << "\" upper = \"" << upper << "\" velocity = \"" << velocity << "\" />\n";
     }
 
+    /*!
+     * @brief ends joint tag and does error handling
+     */
     void finalizeJoint(){
-
+        checkIfFinalized(); //prevent from using function if joint has been finalized
         if(!setParent || !setChild){
             std::string error = "Joint " + jointname_ + " must have a parent and child link declared.";
             throw std::runtime_error(error);
         }
 
         *filepointer << "\t</joint> \n\n";
+        isFinalized = true;
     }
 
+    /*!
+     * @brief returns name of the joint instance
+     * @return name of the joint instance
+     */
     std::string getName(){
         return  jointname_;
     }
 
 private:
-    std::ofstream* filepointer;
-    std::string jointname_;
-    bool setParent = false;
-    bool setChild = false;
+
+    /*!
+     * @brief checks if joint has been finalized
+     */
+    void checkIfFinalized(){
+        if(isFinalized){
+            std::string error = "Cannot make changes to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        }
+    }
+
+    std::ofstream* filepointer; ///< pointer to the urdf file writer
+    std::string jointname_; ///< Member variable to store name of the joint instance
+    bool setParent = false; ///< flag to check if a parent has been assigned
+    bool setChild = false; ///< flag to check if a child has been assigned
+    bool isFinalized = false; ///< flag to check if joint has been finalized
 };
 
+/*!
+ * @brief Robot class to define new robots and manage urdf files
+ */
 class Robot{
 public:
-    void beginURDF(std::string name, std::ofstream* file){
+    /*!
+     * @brief starts the urdf file and writes preprocessing arguments
+     * @param file pointer to the urdf file writer
+     */
+    void beginURDF(std::ofstream* file){
         filepointer = file;
         *filepointer << "<?xml version=\"1.0\" ?>\n\n";
         *filepointer << "<!-- | This document was custom generated using the cpp-to-urdf library. For more details visit https://github.com/kmolan/cpp-to-urdf-converter | -->\n";
         *filepointer << "<!-- | Do not edit this file by hand unless you know what you're doing                                                                          | -->\n\n\n";
     }
 
+    /*!
+     * @brief start the robot tag and set robot name
+     * @param name desired name of the robot
+     */
     void openRobotAndSetName(std::string name){
-        robot_name = name;
+        robot_name = std::move(name);
         *filepointer << "<robot name=\""<< robot_name <<"\" xmlns:xacro=\"http://ros.org/wiki/xacro\">\n";
     }
 
+    /*!
+     * @brief close the robot tag
+     */
     void finalizeRobot(){
         *filepointer << "</robot>\n";
     }
 
 private:
-    std::string robot_name;
-    std::ofstream* filepointer;
+    std::string robot_name; ///< name of the object instance
+    std::ofstream* filepointer; ///< pointer of the current urdf file writer
 };
