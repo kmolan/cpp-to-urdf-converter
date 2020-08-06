@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <unordered_set>
@@ -80,7 +81,11 @@ public:
      * @param name desired link name
      */
     void setName(const std::string& name){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setName() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
         if(global_list::list_of_links.count(name)){
             std::string error = "Redeclaration of link name " + name + " found. Please use a different name.";
             throw std::runtime_error(error);
@@ -95,7 +100,11 @@ public:
      * @brief begins the visual tag
      */
     void openVisual(){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call openVisual() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
         *filepointer << "\t\t<visual>\n";
         visualtag = true;
     }
@@ -105,8 +114,16 @@ public:
      * @param listOfOrigins std::vector containing the roll, pitch, yaw, x, y, z of the origin
      */
     void setVisualOrigin(const std::vector<float> listOfOrigins){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifvisual(); //prevent using the function if visual tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setVisualOrigin() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!visualtag){
+            std::string error = "Cannot call setVisualOrigin() to link " + linkname_ + " after the visual tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if visual tag has been finalized
+
         helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
@@ -115,8 +132,16 @@ public:
      * @param listOfOrigins std::vector containing the roll, pitch, yaw, x, y, z of the origin
      */
     void setVisualOrigin(const std::vector<double> listOfOrigins){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifvisual(); //prevent using the function if visual tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setVisualOrigin() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!visualtag){
+            std::string error = "Cannot call setVisualOrigin() to link " + linkname_ + " after the visual tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if visual tag has been finalized
+
         helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
@@ -127,8 +152,16 @@ public:
      * @param height
      */
     const void setVisualGeometryBox(float length, float breadth, float height){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifvisual(); //prevent using the function if visual tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setVisualGeometryBox() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!visualtag){
+            std::string error = "Cannot call setVisualGeometryBox() to link " + linkname_ + " after the visual tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if visual tag has been finalized
+
         helper_functions::setGeometryHelperBox(length, breadth, height, filepointer);
     }
 
@@ -138,8 +171,16 @@ public:
      * @param radius
      */
     const void setVisualGeometryCylinder(float length, float radius){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifvisual(); //prevent using the function if visual tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setVisualGeometryCylinder() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!visualtag){
+            std::string error = "Cannot call setVisualGeometryCylinder() to link " + linkname_ + " after the visual tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if visual tag has been finalized
+
         helper_functions::setGeometryHelperCylinder(length, radius, filepointer);
     }
 
@@ -148,8 +189,16 @@ public:
      * @param radius
      */
     const void setVisualGeometrySphere(float radius){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifvisual(); //prevent using the function if visual tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setVisualGeometrySphere() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!visualtag){
+            std::string error = "Cannot call setVisualGeometrySphere() to link " + linkname_ + " after the visual tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if visual tag has been finalized
+
         helper_functions::setGeometryHelperSphere(radius, filepointer);
     }
 
@@ -158,9 +207,17 @@ public:
      * @param meshfilename filename of the mesh
      */
     const void setVisualGeometryMesh(const std::string& meshfilename){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifvisual(); //prevent using the function if visual tag has been finalized
-        helper_functions::setGeometryHelperMesh(meshfilename, filepointer);
+        if (!isLinkOpen){
+            std::string error = "Cannot call setVisualGeometryMesh() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!visualtag){
+            std::string error = "Cannot call setVisualGeometryMesh() to link " + linkname_ + " after the visual tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if visual tag has been finalized
+
+         helper_functions::setGeometryHelperMesh(meshfilename, filepointer);
     }
 
     /*!
@@ -168,8 +225,16 @@ public:
      * @param material instance of the Material object
      */
     void setVisualMaterial(Material material){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifvisual(); //prevent using the function if visual tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setVisualMaterial() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!visualtag){
+            std::string error = "Cannot call setVisualMaterial() to link " + linkname_ + " after the visual tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if visual tag has been finalized
+
         *filepointer << "\t\t\t<material name = \"" << material.getName() << "\"/>\n";
     }
 
@@ -177,7 +242,11 @@ public:
      * @brief close visual tag and prevent from making any further changes to tag
      */
     void finalizeVisual(){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call finalizeVisual() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
         *filepointer << "\t\t</visual>\n";
         visualtag = false;
     }
@@ -186,7 +255,11 @@ public:
      * begin collision tag
      */
     void openCollision(){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call openCollision() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
         *filepointer << "\t\t<collision>\n";
         collisiontag = true;
     }
@@ -196,8 +269,16 @@ public:
      * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
      */
     void setCollisionOrigin(const std::vector<float> listOfOrigins){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifcollision(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setCollisionOrigin() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!collisiontag){
+            std::string error = "Cannot call setCollisionOrigin() to link " + linkname_ + " after the collision tag has been finalized";
+            throw std::runtime_error(error);
+        }
+
         helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
@@ -206,8 +287,16 @@ public:
      * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
      */
     void setCollisionOrigin(const std::vector<double> listOfOrigins){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifcollision(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setCollisionOrigin() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!collisiontag){
+            std::string error = "Cannot call setCollisionOrigin() to link " + linkname_ + " after the collision tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if collision tag has been finalized
+
         helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
@@ -218,8 +307,16 @@ public:
      * @param height
      */
     const void setCollisionGeometryBox(float length, float breadth, float height){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifcollision(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setCollisionGeometryBox() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!collisiontag){
+            std::string error = "Cannot call setCollisionGeometryBox() to link " + linkname_ + " after the collision tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if collision tag has been finalized
+
         helper_functions::setGeometryHelperBox(length , breadth , height, filepointer);
     }
 
@@ -229,8 +326,16 @@ public:
      * @param radius
      */
     const void setCollisionGeometryCylinder(float length, float radius){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifcollision(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setCollisionGeometryCylinder() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!collisiontag){
+            std::string error = "Cannot call setCollisionGeometryCylinder() to link " + linkname_ + " after the collision tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if collision tag has been finalized
+
         helper_functions::setGeometryHelperCylinder(length, radius, filepointer);
     }
 
@@ -239,8 +344,16 @@ public:
      * @param radius
      */
     const void setCollisionGeometrySphere(float radius){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifcollision(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setCollisionGeometrySphere() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!collisiontag){
+            std::string error = "Cannot call setCollisionGeometrySphere() to link " + linkname_ + " after the collision tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if collision tag has been finalized
+
         helper_functions::setGeometryHelperSphere(radius, filepointer);
     }
 
@@ -249,8 +362,16 @@ public:
      * @param meshfilename
      */
     void setCollisionGeometryMesh(const std::string& meshfilename){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifcollision(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setCollisionGeometryMesh() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!collisiontag){
+            std::string error = "Cannot call setCollisionGeometryMesh() to link " + linkname_ + " after the collision tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if collision tag has been finalized
+
         helper_functions::setGeometryHelperMesh(meshfilename, filepointer);
     }
 
@@ -258,7 +379,10 @@ public:
      * @brief close collision tag and prevent any further changes to the tag
      */
     void finalizeCollision(){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call finalizeCollision() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
         *filepointer << "\t\t</collision>\n";
         collisiontag = false;
     }
@@ -267,7 +391,10 @@ public:
      * @brief begin inertial tag
      */
     void openInertial(){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call openInertial() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
         *filepointer << "\t\t<inertial>\n";
         inertiatag = true;
     }
@@ -277,8 +404,16 @@ public:
      * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
      */
     void setInertialOrigin(const std::vector<float> listOfOrigins){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifinertial(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setInertialOrigin() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!inertiatag){
+            std::string error = "Cannot call setInertialOrigin() to link " + linkname_ + " after the inertial tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if inertial tag has been finalized
+
         helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
@@ -287,8 +422,16 @@ public:
      * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
      */
     void setInertialOrigin(const std::vector<double> listOfOrigins){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifinertial(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setInertialOrigin() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!inertiatag){
+            std::string error = "Cannot call setInertialOrigin() to link " + linkname_ + " after the inertial tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if inertial tag has been finalized
+
         helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
 
@@ -297,8 +440,16 @@ public:
      * @param mass desired mass
      */
     void setInertialMass(const float mass){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifinertial(); //prevent using the function if collision tag has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call setInertialMass() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!inertiatag){
+            std::string error = "Cannot call setInertialMass() to link " + linkname_ + " after the inertial tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if inertial tag has been finalized
+
         *filepointer << "\t\t\t<mass value = \""<< mass << "\"/>\n";
     }
 
@@ -312,9 +463,16 @@ public:
      * @param izz
      */
     const void setInertialTensor(float ixx, float ixy, float ixz, float iyy, float iyz, float izz){
-        checkIfFinalized(); //prevent using the function if link has been finalized
-        checkifinertial(); //prevent using the function if collision tag has been finalized
-        if(!inertiatag) openInertial();
+        if (!isLinkOpen){
+            std::string error = "Cannot call setInertialTensor() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
+        if (!inertiatag){
+            std::string error = "Cannot call setInertialTensor() to link " + linkname_ + " after the inertial tag has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if inertial tag has been finalized
+
         *filepointer << "\t\t\t<inertia ixx = \""<<ixx << "\" ixy = \"" << ixy << "\" ixz = \"" << ixz << "\" iyy = \"" << iyy << "\" iyz = \"" << iyz << "\" izz = \"" << izz << "\"/>\n";
     }
 
@@ -322,7 +480,11 @@ public:
      * @brief close the inertial tag
      */
     void finalizeInertial(){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+        if (!isLinkOpen){
+            std::string error = "Cannot call finalizeInertial() to the link " + linkname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
+
         *filepointer << "\t\t</inertial>\n";
         inertiatag = false;
     }
@@ -331,18 +493,26 @@ public:
      * @brief close the link and do error handling to ensure all other tags are closed
      */
     void finalizeLink(){
-        checkIfFinalized(); //prevent using the function if link has been finalized
+
+        if (!isLinkOpen){
+            std::string error = "Cannot call finalizeLink() to the link " + linkname_ + " after it has already been finalized";
+            throw std::runtime_error(error);
+        } //prevent using the function if link has been finalized
 
         //other checks
         if(visualtag){
-            throw std::runtime_error("Visual tag must be closed before finalizing link. Use finalizeVisual() to close visual tag");
+            std::string error = "Visual tag of link " + linkname_ + " must be closed before finalizing link. Use finalizeVisual() to close visual tag";
+            throw std::runtime_error(error);
         }
         if(collisiontag){
-            throw std::runtime_error("Collision tag must be closed before finalizing link. Use finalizeCollision() to close visual tag");
+            std::string error = "Collision tag of link " + linkname_ + " must be closed before finalizing link. Use finalizeCollision() to close collision tag";
+            throw std::runtime_error(error);
         }
         if(inertiatag){
-            throw std::runtime_error("Inertial tag must be closed before finalizing link. Use finalizeInertial() to close visual tag");
+            std::string error = "Inertial tag of link " + linkname_ + " must be closed before finalizing link. Use finalizeInertial() to close inertial tag";
+            throw std::runtime_error(error);
         }
+
         *filepointer << "\t</link>\n\n";
         isLinkOpen = false;
     }
@@ -357,46 +527,6 @@ public:
 
 private:
 
-    /*!
-     * @brief checks if the object link has been finalized
-     */
-    void checkIfFinalized(){
-        if (!isLinkOpen){
-            std::string error = "Changes cannot be made to the link " + linkname_ + " after it has been finalized";
-            throw std::runtime_error(error);
-        }
-    }
-
-    /*!
-     * @brief checks if the visual tag has been finalized
-     */
-    void checkifvisual(){
-        if (!visualtag){
-            std::string error = "Changes cannot be made to the visual tag of link " + linkname_ + " after it has been finalized";
-            throw std::runtime_error(error);
-        }
-    }
-
-    /*!
-     * @brief checks if the collision tag has been finalized
-     */
-    void checkifcollision(){
-        if (!collisiontag){
-            std::string error = "Changes cannot be made to the collision tag of link " + linkname_ + " after it has been finalized";
-            throw std::runtime_error(error);
-        }
-    }
-
-    /*!
-     * checks if the inertial tag has been finalized
-     */
-    void checkifinertial(){
-        if (!inertiatag){
-            std::string error = "Changes cannot be made to the inertial tag of link" + linkname_ + " after it has been finalized";
-            throw std::runtime_error(error);
-        }
-    }
-
     std::ofstream* filepointer; ///< Pointer to the urdf file writer
     std::string linkname_; ///< Name of the link instance
     bool visualtag = false; /// < is the visual tag open
@@ -408,7 +538,7 @@ private:
 /*!
  * @brief Joint object to define new joints
  */
-class Joint{ //TODO: ADD CHECK SO USER CANNOT MODIFY AFTER JOINT HAS BEEN FINALIZED
+class Joint{
 public:
     /*!
      * @brief default construtor
@@ -423,8 +553,12 @@ public:
      * @param name desired name of the joint
      * @param type type of joint
      */
-    void SetNameAndType(const std::string& name, const std::string& type = "fixed"){
-        checkIfFinalized(); //prevent from using function if joint has been finalized
+    void setNameAndType(const std::string& name, const std::string& type = "fixed"){
+        if(isFinalized){
+            std::string error = "Cannot call setNameAndType() to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
         if(global_list::list_of_joints.count(name)){
             std::string error = "Redeclaration of joint name " + name + " found. Please use a different name.";
             throw std::runtime_error(error);
@@ -440,7 +574,11 @@ public:
      * @param parent Link object instance of desired parent link
      */
     void setParentLink(Link parent){
-        checkIfFinalized(); //prevent from using function if joint has been finalized
+        if(isFinalized){
+            std::string error = "Cannot call setParentLink() to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
         *filepointer << "\t\t<parent link = \"" << parent.getName() << "\" /> \n";
         setParent = true;
     }
@@ -450,7 +588,11 @@ public:
      * @param child Link object instance of desired child link
      */
     void setChildLink(Link child){
-        checkIfFinalized(); //prevent from using function if joint has been finalized
+        if(isFinalized){
+            std::string error = "Cannot call setChildLink() to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
         *filepointer << "\t\t<child link = \"" << child.getName() << "\" /> \n";
         setChild = true;
     }
@@ -462,7 +604,11 @@ public:
      * @param z
      */
     void setAxis(int x = 0, int y = 0, int z = 0){
-        checkIfFinalized(); //prevent from using function if joint has been finalized
+        if(isFinalized){
+            std::string error = "Cannot call setAxis() to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
         *filepointer << "\t\t<axis xyz = \"" << x << " "<< y <<" "<< z << "\" /> \n";
     }
 
@@ -476,7 +622,11 @@ public:
      * @param z
      */
     void setOrigin(float roll, float pitch, float yaw, float x, float y, float z){
-        checkIfFinalized(); //prevent from using function if joint has been finalized
+        if(isFinalized){
+            std::string error = "Cannot call setOrigin() to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
         helper_functions:: setOriginHelper(roll, pitch, yaw, x, y, z, filepointer);
     }
 
@@ -488,7 +638,11 @@ public:
      * @param velocity
      */
     void setLimits(float effort = 0.0, float upper = 10000.0, float lower = -10000.0, float velocity = 0.0){
-        checkIfFinalized(); //prevent from using function if joint has been finalized
+        if(isFinalized){
+            std::string error = "Cannot call setLimits() to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
         *filepointer << "\t\t<limit effort =\"" << effort << "\" lower = \"" << lower << "\" upper = \"" << upper << "\" velocity = \"" << velocity << "\" />\n";
     }
 
@@ -496,7 +650,11 @@ public:
      * @brief ends joint tag and does error handling
      */
     void finalizeJoint(){
-        checkIfFinalized(); //prevent from using function if joint has been finalized
+        if(isFinalized){
+            std::string error = "Cannot call finalizeJoint() to joint " + jointname_ + " after it has already been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
         if(!setParent || !setChild){
             std::string error = "Joint " + jointname_ + " must have a parent and child link declared.";
             throw std::runtime_error(error);
@@ -515,16 +673,6 @@ public:
     }
 
 private:
-
-    /*!
-     * @brief checks if joint has been finalized
-     */
-    void checkIfFinalized(){
-        if(isFinalized){
-            std::string error = "Cannot make changes to joint " + jointname_ + " after it has been finalized";
-            throw std::runtime_error(error);
-        }
-    }
 
     std::ofstream* filepointer; ///< pointer to the urdf file writer
     std::string jointname_; ///< Member variable to store name of the joint instance

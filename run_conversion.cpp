@@ -1,4 +1,3 @@
-#include <iostream>
 #include "run_conversion.h"
 #include "predefined_materials.h"
 
@@ -9,15 +8,14 @@ int main () {
     Robot robot;
     Link base_link(&target_file), pendulum_link_1(&target_file);
     Joint pendulum_joint_1(&target_file);
-    Material blue_material(&target_file), red_material(&target_file), green_material(&target_file), yellow_material(&target_file), grey_material(&target_file);
+//    Material blue_material(&target_file), red_material(&target_file), green_material(&target_file), yellow_material(&target_file), grey_material(&target_file);
 
     try {
         robot.beginURDF(&target_file);
         robot.openRobotAndSetName("omnipointer");
 
-        blue_material = predefined_materials::blue(&target_file);
-
-        red_material = predefined_materials::red(&target_file);
+        Material blue_material = predefined_materials::blue(&target_file);
+        Material red_material = predefined_materials::red(&target_file);
 
         std::vector<float> listOfOrigins = {0, 0, 0, 0, 0, 0.05715};
         base_link.setName("base_link");
@@ -44,6 +42,7 @@ int main () {
         pendulum_link_1.setVisualGeometryCylinder(0.6, 0.2);
         pendulum_link_1.setVisualMaterial(blue_material);
         pendulum_link_1.finalizeVisual();
+
         pendulum_link_1.openCollision();
         pendulum_link_1.setCollisionOrigin(listOfOrigins);
         pendulum_link_1.setCollisionGeometryBox(0.0402, 0.05, 1);
@@ -55,7 +54,7 @@ int main () {
         pendulum_link_1.finalizeInertial();
         pendulum_link_1.finalizeLink();
 
-        pendulum_joint_1.SetNameAndType("pendulum_joint_1", "continuous");
+        pendulum_joint_1.setNameAndType("pendulum_joint_1", "continuous");
         pendulum_joint_1.setParentLink(base_link);
         pendulum_joint_1.setChildLink(pendulum_link_1);
         pendulum_joint_1.setLimits(2.5, 10000, -10000,10.0);

@@ -1,3 +1,5 @@
+/* Header with helper functions for the common variant of urdf specifications*/
+
 #pragma once
 
 namespace helper_functions {
