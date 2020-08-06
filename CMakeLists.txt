@@ -10,4 +10,3 @@ include_directories(
 )
 
 add_executable(cpp_to_urdf run_conversion.cpp)
-#target_link_libraries(cpp_to_urdf ${PROJECT_NAME} ${catkin_LIBRARIES})

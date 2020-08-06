@@ -1,5 +1,6 @@
 #include <iostream>
 #include "run_conversion.h"
+#include "predefined_materials.h"
 
 #define filename "test.urdf"
 
@@ -14,13 +15,9 @@ int main () {
         robot.beginURDF(&target_file);
         robot.openRobotAndSetName("omnipointer");
 
-        blue_material.setMaterialName("Blue");
-        blue_material.setRGBA(0.0,0.0,0.8,1);
-        blue_material.finalizeMaterial();
+        blue_material = predefined_materials::blue(&target_file);
 
-        red_material.setMaterialName("Red");
-        red_material.setRGBA(1.0,0.0,0.0,1);
-        red_material.finalizeMaterial();
+        red_material = predefined_materials::red(&target_file);
 
         std::vector<float> listOfOrigins = {0, 0, 0, 0, 0, 0.05715};
         base_link.setName("base_link");

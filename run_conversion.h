@@ -7,6 +7,7 @@
 #include <vector>
 #include "helper_functions.h"
 
+
 /*!
  * namespace to store current list of links, joints and materials to prevent redeclaration of names
  */
@@ -33,7 +34,7 @@ public:
      * @brief opens the material tag, specifies the material name and cross-checks if name already exists
      * @param name the name of the desired material
      */
-    void setMaterialName(const std::string& name){
+    void setMaterialNameAndRGBA(const std::string& name, float r, float g, float b, float a){
 
         if(global_list::list_of_materials.count(name)){
             std::string error = "Redeclaration of material name " + name + " found. Please use a different name.";
@@ -43,29 +44,7 @@ public:
         global_list::list_of_joints.insert(name);
         material_name = name;
         *filepointer << "\t<material name = \"" + name + "\" > \n";
-
-    }
-
-    /*!
-     * @brief writes the rgba component of the material
-     * @param r
-     * @param g
-     * @param b
-     * @param a
-     */
-    const void setRGBA(float r, float g, float b, float a){
         *filepointer << "\t\t<color rgba =\"" << r << " "<< g << " " << b << " " << a << "\"/>\n";
-        setColor = true;
-    }
-
-    /*!
-     * @brief closes the material tag
-     */
-    void finalizeMaterial(){
-        if(!setColor){
-            std::string error = material_name + " must have a defined rgba value. Use .setRGBA() to set rgba values.";
-            throw std::runtime_error(error);
-        }
         *filepointer << "\t</material>\n\n";
     }
 
@@ -79,7 +58,6 @@ public:
 
 private:
     std::ofstream* filepointer; ///<Member variable to store file pointer of the urdf file
-    bool setColor = false; ///<Flag to check if the user is trying to close the material tag before setting rgba values
     std::string material_name; ///<Member variable to store the instance's name
 };
 
