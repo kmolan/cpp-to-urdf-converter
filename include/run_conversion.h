@@ -35,7 +35,7 @@ public:
      * @brief opens the material tag, specifies the material name and cross-checks if name already exists
      * @param name the name of the desired material
      */
-    void setMaterialNameAndRGBA(const std::string& name, float r, float g, float b, float a){
+    void openMaterialAndSetNameRGBA(const std::string& name, float r, float g, float b, float a){
 
         if(global_list::list_of_materials.count(name)){
             std::string error = "Redeclaration of material name " + name + " found. Please use a different name.";
@@ -80,7 +80,7 @@ public:
      * @brief begins the link tag and specifies link name, cross-checks to prevent redeclaration of link names
      * @param name desired link name
      */
-    void setName(const std::string& name){
+    void openLinkAndSetName(const std::string& name){
         if (!isLinkOpen){
             std::string error = "Cannot call setName() to the link " + linkname_ + " after it has been finalized";
             throw std::runtime_error(error);
@@ -114,24 +114,6 @@ public:
      * @param listOfOrigins std::vector containing the roll, pitch, yaw, x, y, z of the origin
      */
     void setVisualOrigin(const std::vector<float> listOfOrigins){
-        if (!isLinkOpen){
-            std::string error = "Cannot call setVisualOrigin() to the link " + linkname_ + " after it has been finalized";
-            throw std::runtime_error(error);
-        } //prevent using the function if link has been finalized
-
-        if (!visualtag){
-            std::string error = "Cannot call setVisualOrigin() to link " + linkname_ + " after the visual tag has been finalized";
-            throw std::runtime_error(error);
-        } //prevent using the function if visual tag has been finalized
-
-        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
-    }
-
-    /*!
-     * @brief set origin for the visual tag
-     * @param listOfOrigins std::vector containing the roll, pitch, yaw, x, y, z of the origin
-     */
-    void setVisualOrigin(const std::vector<double> listOfOrigins){
         if (!isLinkOpen){
             std::string error = "Cannot call setVisualOrigin() to the link " + linkname_ + " after it has been finalized";
             throw std::runtime_error(error);
@@ -278,24 +260,6 @@ public:
             std::string error = "Cannot call setCollisionOrigin() to link " + linkname_ + " after the collision tag has been finalized";
             throw std::runtime_error(error);
         }
-
-        helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
-    }
-
-    /*!
-     * @brief set origin for collision tag
-     * @param listOfOrigins std::vector<> containing the roll, pitch, yaw, x, y, z of the origin
-     */
-    void setCollisionOrigin(const std::vector<double> listOfOrigins){
-        if (!isLinkOpen){
-            std::string error = "Cannot call setCollisionOrigin() to the link " + linkname_ + " after it has been finalized";
-            throw std::runtime_error(error);
-        } //prevent using the function if link has been finalized
-
-        if (!collisiontag){
-            std::string error = "Cannot call setCollisionOrigin() to link " + linkname_ + " after the collision tag has been finalized";
-            throw std::runtime_error(error);
-        } //prevent using the function if collision tag has been finalized
 
         helper_functions::setOriginHelper(listOfOrigins[0], listOfOrigins[1], listOfOrigins[2], listOfOrigins[3], listOfOrigins[4], listOfOrigins[5], filepointer);
     }
@@ -553,7 +517,7 @@ public:
      * @param name desired name of the joint
      * @param type type of joint
      */
-    void setNameAndType(const std::string& name, const std::string& type = "fixed"){
+    void openJointAndSetNameType(const std::string& name, const std::string& type = "fixed"){
         if(isFinalized){
             std::string error = "Cannot call setNameAndType() to joint " + jointname_ + " after it has been finalized";
             throw std::runtime_error(error);
@@ -692,11 +656,11 @@ private:
 
 class Transmission{
 public:
-    Transmission(std::ofstream* file){
+    explicit Transmission(std::ofstream* file){
         filepointer = file;
     }
 
-    const void setNameAndType(std::string name, std::string type){
+    const void openTransmissionAndSetNameType(std::string name, std::string type){
 
         if(isFinalized){
             std::string error = "Cannot call setNameAndType() on Transmission " + transmission_name + "after it has been finalized";
@@ -764,7 +728,7 @@ public:
      * @brief starts the urdf file and writes preprocessing arguments
      * @param file pointer to the urdf file writer
      */
-    void beginURDF(std::ofstream* file){
+    void openURDF(std::ofstream* file){
         filepointer = file;
         *filepointer << "<?xml version=\"1.0\" ?>\n\n";
         *filepointer << "<!-- | This document was custom generated using the cpp-to-urdf library. For more details visit https://github.com/kmolan/cpp-to-urdf-converter | -->\n";

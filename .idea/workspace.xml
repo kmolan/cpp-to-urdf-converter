@@ -12,13 +12,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f82a88f-188b-4c64-821b-60a1c71c1cee" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helper_functions.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/predefined_materials.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/run_conversion.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/run_conversion.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_conversion.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/run_conversion.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_conversion.h" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +68,7 @@
       <option name="presentableId" value="Default" />
       <updated>1596487940960</updated>
       <workItem from="1596487942074" duration="30057000" />
-      <workItem from="1596669083012" duration="19728000" />
+      <workItem from="1596669083012" duration="21425000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1596609796287</created>

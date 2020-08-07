@@ -2,7 +2,6 @@
 
 #define filename "urdf/pendulum.urdf"
 
-//TODO: colours not visible
 int main () {
 
     std::ofstream target_file (filename);
@@ -11,7 +10,7 @@ int main () {
     Joint base_weld(&target_file), theta(&target_file), arm_weld(&target_file);
     Transmission elbow_trans(&target_file);
 
-    robot.beginURDF(&target_file);
+    robot.openURDF(&target_file);
     robot.openRobotAndSetName("pendulum");
 
     Material blue_material = predefined_materials::blue(&target_file);
@@ -19,7 +18,7 @@ int main () {
     Material green_material = predefined_materials::green(&target_file);
 
     std::vector<float> listOfOrigins = {0, 0, 0, 0, 0, 0};
-    world.setName("world");
+    world.openLinkAndSetName("world");
     world.openInertial();
     world.setInertialOrigin(listOfOrigins);
     world.setInertialMass(0.01);
@@ -28,7 +27,7 @@ int main () {
     world.finalizeLink();
 
     listOfOrigins = {0, 0, 0, 0, 0, 0.015};
-    base_part2.setName("base_part2");
+    base_part2.openLinkAndSetName("base_part2");
     base_part2.openInertial();
     base_part2.setInertialOrigin(listOfOrigins);
     base_part2.setInertialMass(1.0);
@@ -41,22 +40,21 @@ int main () {
     base_part2.finalizeVisual();
     base_part2.finalizeLink();
 
-    base_weld.setNameAndType("base_weld", "fixed");
+    base_weld.openJointAndSetNameType("base_weld", "fixed");
     base_weld.setParentLink(world);
     base_weld.setChildLink(base_part2);
     base_weld.setOrigin(0,0,0,0,0,1); //TODO FIX
     base_weld.finalizeJoint();
 
     listOfOrigins = {0,0,0,0,0,-0.5};
-    arm.setName("arm");
+    arm.openLinkAndSetName("arm");
     arm.openInertial();
     arm.setInertialOrigin(listOfOrigins);
     arm.setInertialMass(0.5);
     arm.setInertialTensor(0,0,0,0,0,0);
     arm.finalizeInertial();
     arm.openVisual();
-    listOfOrigins = {0,0,0,0,0, -0.375};
-    arm.setVisualOrigin(listOfOrigins); //TODO ADD OTHER METHODS OF IMPLEMENTATION
+    arm.setVisualOrigin({0,0,0,0,0, -0.375});
     arm.setVisualGeometryCylinder(0.75, 0.01);
     arm.setVisualMaterial(red_material);
     arm.finalizeVisual();
@@ -66,7 +64,7 @@ int main () {
     arm.finalizeCollision();
     arm.finalizeLink();
 
-    theta.setNameAndType("theta", "continuous"); //TODO: every class should have a begin and finalize???
+    theta.openJointAndSetNameType("theta", "continuous");
     theta.setParentLink(base_part2);
     theta.setChildLink(arm);
     theta.setAxis(0,1,0);
@@ -74,7 +72,7 @@ int main () {
     theta.finalizeJoint();
 
     listOfOrigins = {0,0,0,0,0, -0.5};
-    arm_com.setName("arm_com");
+    arm_com.openLinkAndSetName("arm_com");
     arm_com.openInertial();
     arm_com.setInertialOrigin(listOfOrigins);
     arm_com.setInertialMass(0.5);
@@ -91,12 +89,12 @@ int main () {
     arm_com.finalizeCollision();
     arm_com.finalizeLink();
 
-    arm_weld.setNameAndType("arm_weld", "fixed");
+    arm_weld.openJointAndSetNameType("arm_weld", "fixed");
     arm_weld.setParentLink(arm);
     arm_weld.setChildLink(arm_com);
     arm_weld.finalizeJoint();
 
-    elbow_trans.setNameAndType("elbow_trans", "SimpleTransmission");
+    elbow_trans.openTransmissionAndSetNameType("elbow_trans", "SimpleTransmission");
     elbow_trans.setActuatorName("tau");
     elbow_trans.setJointName(theta);
     elbow_trans.setMechanicalReduction(1);
