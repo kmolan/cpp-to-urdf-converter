@@ -44,9 +44,9 @@ public:
 
         global_list::list_of_joints.insert(name);
         material_name = name;
-        *filepointer << "\t<material name = \"" + name + "\" > \n";
-        *filepointer << "\t\t<color rgba =\"" << r << " "<< g << " " << b << " " << a << "\"/>\n";
-        *filepointer << "\t</material>\n\n";
+        *filepointer << " <material name = \"" + name + "\" > \n";
+        *filepointer << "  <color rgba =\"" << r << " "<< g << " " << b << " " << a << "\"/>\n";
+        *filepointer << " </material>\n\n";
     }
 
     /*!
@@ -93,7 +93,7 @@ public:
 
         global_list::list_of_links.insert(name);
         linkname_ = name;
-        *filepointer << "\t<link name =\"" << name << "\"> \n";
+        *filepointer << " <link name =\"" << name << "\"> \n";
     }
 
     /*!
@@ -105,7 +105,7 @@ public:
             throw std::runtime_error(error);
         } //prevent using the function if link has been finalized
 
-        *filepointer << "\t\t<visual>\n";
+        *filepointer << "  <visual>\n";
         visualtag = true;
     }
 
@@ -235,7 +235,7 @@ public:
             throw std::runtime_error(error);
         } //prevent using the function if visual tag has been finalized
 
-        *filepointer << "\t\t\t<material name = \"" << material.getName() << "\"/>\n";
+        *filepointer << "   <material name = \"" << material.getName() << "\"/>\n";
     }
 
     /*!
@@ -247,7 +247,7 @@ public:
             throw std::runtime_error(error);
         } //prevent using the function if link has been finalized
 
-        *filepointer << "\t\t</visual>\n";
+        *filepointer << "  </visual>\n";
         visualtag = false;
     }
 
@@ -260,7 +260,7 @@ public:
             throw std::runtime_error(error);
         } //prevent using the function if link has been finalized
 
-        *filepointer << "\t\t<collision>\n";
+        *filepointer << "  <collision>\n";
         collisiontag = true;
     }
 
@@ -383,7 +383,7 @@ public:
             std::string error = "Cannot call finalizeCollision() to the link " + linkname_ + " after it has been finalized";
             throw std::runtime_error(error);
         } //prevent using the function if link has been finalized
-        *filepointer << "\t\t</collision>\n";
+        *filepointer << "  </collision>\n";
         collisiontag = false;
     }
 
@@ -395,7 +395,7 @@ public:
             std::string error = "Cannot call openInertial() to the link " + linkname_ + " after it has been finalized";
             throw std::runtime_error(error);
         } //prevent using the function if link has been finalized
-        *filepointer << "\t\t<inertial>\n";
+        *filepointer << "  <inertial>\n";
         inertiatag = true;
     }
 
@@ -450,7 +450,7 @@ public:
             throw std::runtime_error(error);
         } //prevent using the function if inertial tag has been finalized
 
-        *filepointer << "\t\t\t<mass value = \""<< mass << "\"/>\n";
+        *filepointer << "   <mass value = \""<< mass << "\"/>\n";
     }
 
     /*!
@@ -473,7 +473,7 @@ public:
             throw std::runtime_error(error);
         } //prevent using the function if inertial tag has been finalized
 
-        *filepointer << "\t\t\t<inertia ixx = \""<<ixx << "\" ixy = \"" << ixy << "\" ixz = \"" << ixz << "\" iyy = \"" << iyy << "\" iyz = \"" << iyz << "\" izz = \"" << izz << "\"/>\n";
+        *filepointer << "   <inertia ixx = \""<<ixx << "\" ixy = \"" << ixy << "\" ixz = \"" << ixz << "\" iyy = \"" << iyy << "\" iyz = \"" << iyz << "\" izz = \"" << izz << "\"/>\n";
     }
 
     /*!
@@ -485,7 +485,7 @@ public:
             throw std::runtime_error(error);
         } //prevent using the function if link has been finalized
 
-        *filepointer << "\t\t</inertial>\n";
+        *filepointer << "  </inertial>\n";
         inertiatag = false;
     }
 
@@ -513,7 +513,7 @@ public:
             throw std::runtime_error(error);
         }
 
-        *filepointer << "\t</link>\n\n";
+        *filepointer << " </link>\n\n";
         isLinkOpen = false;
     }
 
@@ -566,7 +566,7 @@ public:
 
         global_list::list_of_joints.insert(name);
         jointname_ = name;
-        *filepointer << "\t<joint name = \"" << name <<"\" type = \""<< type << "\" > \n";
+        *filepointer << " <joint name = \"" << name <<"\" type = \""<< type << "\" > \n";
     }
 
     /*!
@@ -579,7 +579,7 @@ public:
             throw std::runtime_error(error);
         } //prevent from using function if joint has been finalized
 
-        *filepointer << "\t\t<parent link = \"" << parent.getName() << "\" /> \n";
+        *filepointer << "  <parent link = \"" << parent.getName() << "\" /> \n";
         setParent = true;
     }
 
@@ -593,7 +593,7 @@ public:
             throw std::runtime_error(error);
         } //prevent from using function if joint has been finalized
 
-        *filepointer << "\t\t<child link = \"" << child.getName() << "\" /> \n";
+        *filepointer << "  <child link = \"" << child.getName() << "\" /> \n";
         setChild = true;
     }
 
@@ -609,7 +609,7 @@ public:
             throw std::runtime_error(error);
         } //prevent from using function if joint has been finalized
 
-        *filepointer << "\t\t<axis xyz = \"" << x << " "<< y <<" "<< z << "\" /> \n";
+        *filepointer << "  <axis xyz = \"" << x << " "<< y <<" "<< z << "\" /> \n";
     }
 
     /*!
@@ -643,7 +643,16 @@ public:
             throw std::runtime_error(error);
         } //prevent from using function if joint has been finalized
 
-        *filepointer << "\t\t<limit effort =\"" << effort << "\" lower = \"" << lower << "\" upper = \"" << upper << "\" velocity = \"" << velocity << "\" />\n";
+        *filepointer << "  <limit effort =\"" << effort << "\" lower = \"" << lower << "\" upper = \"" << upper << "\" velocity = \"" << velocity << "\" />\n";
+    }
+
+    void setDynamics(float damping, float friction){
+        if(isFinalized){
+            std::string error = "Cannot call setDynamics() to joint " + jointname_ + " after it has been finalized";
+            throw std::runtime_error(error);
+        } //prevent from using function if joint has been finalized
+
+        *filepointer << "  <dynamics damping = \"" << damping << "\" friction = \"" << friction << "\"/>\n";
     }
 
     /*!
@@ -660,7 +669,7 @@ public:
             throw std::runtime_error(error);
         }
 
-        *filepointer << "\t</joint> \n\n";
+        *filepointer << " </joint> \n\n";
         isFinalized = true;
     }
 
@@ -679,6 +688,71 @@ private:
     bool setParent = false; ///< flag to check if a parent has been assigned
     bool setChild = false; ///< flag to check if a child has been assigned
     bool isFinalized = false; ///< flag to check if joint has been finalized
+};
+
+class Transmission{
+public:
+    Transmission(std::ofstream* file){
+        filepointer = file;
+    }
+
+    const void setNameAndType(std::string name, std::string type){
+
+        if(isFinalized){
+            std::string error = "Cannot call setNameAndType() on Transmission " + transmission_name + "after it has been finalized";
+            throw std::runtime_error(error);
+        }
+
+        *filepointer << " <transmission name = \"" << name << "\" type = \"" << type << "\">\n";
+        transmission_name = name;
+    }
+
+    void setActuatorName(std::string name){
+
+        if(isFinalized){
+            std::string error = "Cannot call setActuatorName() on Transmission " + transmission_name + "after it has been finalized";
+            throw std::runtime_error(error);
+        }
+
+        *filepointer << "  <actuator name =\"" << name << "\"/>\n";
+    }
+
+    void setJointName(Joint joint){
+
+        if(isFinalized){
+            std::string error = "Cannot call setJointName() on Transmission " + transmission_name + "after it has been finalized";
+            throw std::runtime_error(error);
+        }
+
+        *filepointer << "  <joint name = \"" << joint.getName() << "\"/>\n";
+    }
+
+    void setMechanicalReduction(float num){
+
+        if(isFinalized){
+            std::string error = "Cannot call setMechanicalReduction() on Transmission " + transmission_name + "after it has been finalized";
+            throw std::runtime_error(error);
+        }
+
+        *filepointer << "  <mechanicalReduction>"<<num<<"</mechanicalReduction>\n";
+    }
+
+    void finalizeTransmission(){
+
+        if(isFinalized){
+            std::string error = "Cannot call finalizeTransmission() on Transmission " + transmission_name + "after it has already been finalized";
+            throw std::runtime_error(error);
+        }
+
+        *filepointer << " </transmission>\n\n";
+        isFinalized = true;
+    }
+
+
+private:
+    std::ofstream* filepointer;
+    std::string transmission_name;
+    bool isFinalized = false;
 };
 
 /*!

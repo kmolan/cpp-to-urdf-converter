@@ -6,6 +6,6 @@ Work still in progress. Please contact anmolkathail@gmail.com for any enquiries/
 TODO: 
 1. Include Eigen support
 2. Support different gazebo material and other tags
-3. Include library of pre-defined material tags
-3. Custom errors for each case
+3. Include library of pre-defined material tags (In progress)
+3. Custom errors for each case (Done)
 4. Write tutorial scripts

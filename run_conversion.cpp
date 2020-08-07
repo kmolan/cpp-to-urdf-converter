@@ -1,72 +1,114 @@
-#include "run_conversion.h"
-#include "predefined_materials.h"
+#include "include/cpp-to-urdf.h"
 
-#define filename "test.urdf"
+#define filename "urdf/pendulum.urdf"
 
+//TODO: colours not visible
 int main () {
+
     std::ofstream target_file (filename);
     Robot robot;
-    Link base_link(&target_file), pendulum_link_1(&target_file);
-    Joint pendulum_joint_1(&target_file);
-//    Material blue_material(&target_file), red_material(&target_file), green_material(&target_file), yellow_material(&target_file), grey_material(&target_file);
+    Link world(&target_file), base_part2(&target_file), arm(&target_file), arm_com(&target_file); //TODO: using target_file each time is getting annoying
+    Joint base_weld(&target_file), theta(&target_file), arm_weld(&target_file);
+    Transmission elbow_trans(&target_file);
 
-    try {
-        robot.beginURDF(&target_file);
-        robot.openRobotAndSetName("omnipointer");
+    robot.beginURDF(&target_file);
+    robot.openRobotAndSetName("pendulum");
 
-        Material blue_material = predefined_materials::blue(&target_file);
-        Material red_material = predefined_materials::red(&target_file);
+    Material blue_material = predefined_materials::blue(&target_file);
+    Material red_material = predefined_materials::red(&target_file);
+    Material green_material = predefined_materials::green(&target_file);
 
-        std::vector<float> listOfOrigins = {0, 0, 0, 0, 0, 0.05715};
-        base_link.setName("base_link");
-        base_link.openVisual();
-        base_link.setVisualOrigin(listOfOrigins);
-        base_link.setVisualGeometryBox(0.1143,0.0545,0.1143);
-        base_link.setVisualMaterial(red_material);
-        base_link.finalizeVisual();
-        base_link.openCollision();
-        base_link.setCollisionOrigin(listOfOrigins);
-        base_link.setCollisionGeometryBox(0.1143, 0.0545, 0.1143);
-        base_link.finalizeCollision();
-        base_link.openInertial();
-        base_link.setInertialOrigin(listOfOrigins);
-        base_link.setInertialMass(0.2);
-        base_link.setInertialTensor(0.000267245666667, 0, 0, 0.000435483, 0, 0.000267245666667);
-        base_link.finalizeInertial();
-        base_link.finalizeLink();
+    std::vector<float> listOfOrigins = {0, 0, 0, 0, 0, 0};
+    world.setName("world");
+    world.openInertial();
+    world.setInertialOrigin(listOfOrigins);
+    world.setInertialMass(0.01);
+    world.setInertialTensor(0.01,0,0,0,0,0);
+    world.finalizeInertial();
+    world.finalizeLink();
 
-        listOfOrigins = {0, 0, 0, 0, 0, 0.05715};
-        pendulum_link_1.setName("pendulum_link_1");
-        pendulum_link_1.openVisual();
-        pendulum_link_1.setVisualOrigin(listOfOrigins);
-        pendulum_link_1.setVisualGeometryCylinder(0.6, 0.2);
-        pendulum_link_1.setVisualMaterial(blue_material);
-        pendulum_link_1.finalizeVisual();
+    listOfOrigins = {0, 0, 0, 0, 0, 0.015};
+    base_part2.setName("base_part2");
+    base_part2.openInertial();
+    base_part2.setInertialOrigin(listOfOrigins);
+    base_part2.setInertialMass(1.0);
+    base_part2.setInertialTensor(0,0,0,0,0,0);
+    base_part2.finalizeInertial();
+    base_part2.openVisual();
+    base_part2.setVisualOrigin(listOfOrigins);
+    base_part2.setVisualGeometrySphere(0.015);
+    base_part2.setVisualMaterial(green_material);
+    base_part2.finalizeVisual();
+    base_part2.finalizeLink();
 
-        pendulum_link_1.openCollision();
-        pendulum_link_1.setCollisionOrigin(listOfOrigins);
-        pendulum_link_1.setCollisionGeometryBox(0.0402, 0.05, 1);
-        pendulum_link_1.finalizeCollision();
-        pendulum_link_1.openInertial();
-        pendulum_link_1.setInertialOrigin(listOfOrigins);
-        pendulum_link_1.setInertialMass(1.0);
-        pendulum_link_1.setInertialTensor(0.0835416666667, 0, 0, 0.0835416666667, 0, 0.000343003333333);
-        pendulum_link_1.finalizeInertial();
-        pendulum_link_1.finalizeLink();
+    base_weld.setNameAndType("base_weld", "fixed");
+    base_weld.setParentLink(world);
+    base_weld.setChildLink(base_part2);
+    base_weld.setOrigin(0,0,0,0,0,1); //TODO FIX
+    base_weld.finalizeJoint();
 
-        pendulum_joint_1.setNameAndType("pendulum_joint_1", "continuous");
-        pendulum_joint_1.setParentLink(base_link);
-        pendulum_joint_1.setChildLink(pendulum_link_1);
-        pendulum_joint_1.setLimits(2.5, 10000, -10000,10.0);
-        pendulum_joint_1.setOrigin(0,0,0,0,0.05225,0.05715);
-        pendulum_joint_1.setAxis(0,1,0);
-        pendulum_joint_1.finalizeJoint();
+    listOfOrigins = {0,0,0,0,0,-0.5};
+    arm.setName("arm");
+    arm.openInertial();
+    arm.setInertialOrigin(listOfOrigins);
+    arm.setInertialMass(0.5);
+    arm.setInertialTensor(0,0,0,0,0,0);
+    arm.finalizeInertial();
+    arm.openVisual();
+    listOfOrigins = {0,0,0,0,0, -0.375};
+    arm.setVisualOrigin(listOfOrigins); //TODO ADD OTHER METHODS OF IMPLEMENTATION
+    arm.setVisualGeometryCylinder(0.75, 0.01);
+    arm.setVisualMaterial(red_material);
+    arm.finalizeVisual();
+    arm.openCollision();
+    arm.setCollisionOrigin(listOfOrigins);
+    arm.setCollisionGeometryCylinder(0.75,0.01);
+    arm.finalizeCollision();
+    arm.finalizeLink();
 
-        robot.finalizeRobot();
-    }
-    catch(const char* msg){
-        std::cerr << msg << std::endl;
-    }
+    theta.setNameAndType("theta", "continuous"); //TODO: every class should have a begin and finalize???
+    theta.setParentLink(base_part2);
+    theta.setChildLink(arm);
+    theta.setAxis(0,1,0);
+    theta.setDynamics(0.5, 20);
+    theta.finalizeJoint();
+
+    listOfOrigins = {0,0,0,0,0, -0.5};
+    arm_com.setName("arm_com");
+    arm_com.openInertial();
+    arm_com.setInertialOrigin(listOfOrigins);
+    arm_com.setInertialMass(0.5);
+    arm_com.setInertialTensor(0,0,0,0,0,0);
+    arm_com.finalizeInertial();
+    arm_com.openVisual();
+    arm_com.setVisualOrigin(listOfOrigins);
+    arm_com.setVisualGeometrySphere(0.025);
+    arm_com.setVisualMaterial(blue_material);
+    arm_com.finalizeVisual();
+    arm_com.openCollision();
+    arm_com.setCollisionOrigin(listOfOrigins);
+    arm_com.setCollisionGeometrySphere(0.025);
+    arm_com.finalizeCollision();
+    arm_com.finalizeLink();
+
+    arm_weld.setNameAndType("arm_weld", "fixed");
+    arm_weld.setParentLink(arm);
+    arm_weld.setChildLink(arm_com);
+    arm_weld.finalizeJoint();
+
+    elbow_trans.setNameAndType("elbow_trans", "SimpleTransmission");
+    elbow_trans.setActuatorName("tau");
+    elbow_trans.setJointName(theta);
+    elbow_trans.setMechanicalReduction(1);
+    elbow_trans.finalizeTransmission();
+
+    setGazeboMaterial(&target_file, "Gazebo/Green", base_part2);
+    setGazeboMaterial(&target_file, "Gazebo/Red", arm);
+    setGazeboMaterial(&target_file, "Gazebo/Blue", arm_com);
+
+    robot.finalizeRobot();
+
     target_file.close();
+
     return 0;
 }
